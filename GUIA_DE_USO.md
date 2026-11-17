@@ -92,6 +92,23 @@ O acionamento e a pausa seguem a mesma lógica de confirmação dos botões: 3,3
 
 A opção --checar verifica a lógica sem abrir CAN ou GPIO. O comando normal usa /dev/ttyACM0; informe outra porta como argumento, se necessário. Pino 31/D6 comanda a coxa esquerda e pino 33/D13 a direita.
 
+### medir_batentes.py
+
+**O que faz.** Este é o medidor assistido pelo operador. Ele não movimenta os motores até os limites: pede o estado de um motor, envia o quadro que o deixa sem torque e solicita que o operador gire a articulação à mão até o batente indicado. Lê e registra o ângulo daquele extremo. Repete para os dois extremos de cada motor: ID 1 coxa esquerda, ID 2 joelho esquerdo, ID 3 coxa direita e ID 4 joelho direito.
+
+**Dependências.** Python 3, pyserial, CANable v2 em SLCAN e o suporte_marcha.py que fica na mesma pasta. Não usa GPIO nem os controladores de passo. Não rode outro programa ao mesmo tempo na CANable.
+
+**Como usar.** Deixe o exo apoiado, sem uma pessoa usando, calibre um motor por vez e siga as oito solicitações. Mova a junta lentamente até encostar no batente físico; não force além dele. Primeiro valide a lógica, sem abrir a CAN; depois inicie a medição:
+
+    Jetson:     python3 medir_batentes.py --checar
+    Jetson:     python3 medir_batentes.py
+    Windows:    py -3 medir_batentes.py --checar
+    Windows:    py -3 medir_batentes.py
+    Raspberry:  python3 medir_batentes.py --checar
+    Raspberry:  python3 medir_batentes.py
+
+Para uma porta diferente da padrão, informe-a depois do nome do script: /dev/ttyACM1 no Linux ou COM5 no Windows. No fim, confira os ângulos e a faixa calculada. Responda “s” somente se os oito extremos estiverem corretos; isso atualiza MEASURED_BATENT_LIMITS_DEG no suporte_marcha.py da mesma plataforma. “n” mantém os limites atuais. Em ambos os casos, a medição é salva localmente em ensaios/batentes_*/medicao.json; essa pasta é ignorada pelo Git.
+
 ### caminhada_torque_pleno.py
 
 **O que faz.** Executa automaticamente cinco passos alternados seguindo a curva de marcha do CSV, sem depender dos botões GPIO. Usa os quatro motores, com os valores padrão de 18° para o quadril e 45° para a flexão do joelho. A origem de cada junta é a leitura do encoder feita no início; por isso o exo precisa estar fisicamente alinhado na pose de pé antes de iniciar. No fim ou numa parada, o programa envia o comando para sair do modo de posição e espera a resposta antes de fechar a CAN.
