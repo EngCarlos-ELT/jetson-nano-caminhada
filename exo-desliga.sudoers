@@ -1,0 +1,1 @@
+nvidia ALL=(root) NOPASSWD: /bin/systemctl poweroff, /sbin/shutdown -h now

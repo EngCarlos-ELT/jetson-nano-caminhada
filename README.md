@@ -21,7 +21,7 @@ A curva é uma digitalização aproximada do traço central da figura, não dado
 
 As instruções e dependências de cada plataforma estão nos arquivos `LEIA.txt` e `requirements.txt` correspondentes. `suporte_marcha.py` carrega o CSV e o JSON locais para montar e validar a curva antes de abrir a CAN.
 
-O serviço systemd e o instalador da Raspberry Pi estão incluídos. O instalador prepara dependências, grupos e serviço, mas não cria uma regra `sudoers`; o desligamento por botão requer configuração local aprovada pelo administrador. Os serviços da Jetson dependiam de caminhos particulares da instalação original, então a Jetson é iniciada pelos comandos documentados em `LEIA.txt`.
+O serviço systemd e o instalador da Raspberry Pi estão incluídos. O instalador prepara dependências, grupos e serviço, e cria uma regra `sudoers` que permite ao usuário da instalação executar somente os comandos de desligamento usados pelo programa. Na Jetson, `exo-desliga.sudoers` contém a regra para o usuário `nvidia`; revise o arquivo e valide-o com `visudo -cf` antes de instalar. Os serviços da Jetson dependiam de caminhos particulares da instalação original, então a Jetson é iniciada pelos comandos documentados em `LEIA.txt`.
 
 ## Operação
 

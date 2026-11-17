@@ -18,6 +18,15 @@ Ligue a CANable e confira o nome:
 
 O padrao e /dev/ttyACM0. Se aparecer outro nome, passe na linha de comando.
 
+Para usar o desligamento por botoes com o usuario nvidia, revise e valide a
+regra incluida antes de instalar:
+
+  sudo visudo -cf exo-desliga.sudoers
+  sudo install -o root -g root -m 0440 exo-desliga.sudoers /etc/sudoers.d/exo-desliga
+  sudo visudo -cf /etc/sudoers.d/exo-desliga
+
+A regra permite somente `systemctl poweroff` e `shutdown -h now`.
+
   python3 caminhada_torque_pleno.py
   python3 caminhada_torque_pleno.py /dev/ttyACM1
 

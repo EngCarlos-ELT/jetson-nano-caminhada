@@ -33,13 +33,14 @@ incluidos. Rode o instalador dentro desta pasta:
 
   sudo bash instalar.sh
 
-Ele instala dependencias, adiciona o usuario aos grupos e habilita o servico.
-Ele nao cria regra sudoers. O desligamento por botao depende de permissao local
-configurada e revisada pelo administrador.
+Ele instala dependencias, adiciona o usuario aos grupos, grava e valida a regra
+sudoers e habilita o servico. A regra permite somente `systemctl poweroff` e
+`shutdown -h now` para o usuario dono desta pasta. Revise instalar.sh antes de
+executa-lo; use `visudo -cf /etc/sudoers.d/exo-desliga` para validar o arquivo.
 
-exo_master.py solicita desligamento por sudo ao segurar os dois botoes por
-5 s. Isso depende de permissao local; o repositorio nao configura acesso root
-sem senha. O LED do pino 7 acende quando os motores seguram a pose em pe.
+exo_master.py solicita desligamento ao segurar os dois botoes por 5 s. A regra
+instalada permite apenas os comandos de desligamento descritos acima. O LED do
+pino 7 acende quando os motores seguram a pose em pe.
 
 Sem servico, dentro desta pasta:
 

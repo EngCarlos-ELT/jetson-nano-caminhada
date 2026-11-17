@@ -19,6 +19,17 @@ apt-get update
 apt-get install -y python3-lgpio python3-serial
 usermod -a -G dialout,gpio "$DONO"
 
+SUDOERS_TMP=$(mktemp /tmp/exo-desliga.XXXXXX)
+trap 'rm -f "$SUDOERS_TMP"' EXIT
+cat > "$SUDOERS_TMP" <<EOF
+$DONO ALL=(root) NOPASSWD: /bin/systemctl poweroff, /sbin/shutdown -h now
+EOF
+chmod 0440 "$SUDOERS_TMP"
+visudo -cf "$SUDOERS_TMP"
+install -o root -g root -m 0440 "$SUDOERS_TMP" /etc/sudoers.d/exo-desliga
+rm -f "$SUDOERS_TMP"
+trap - EXIT
+
 cat > /etc/systemd/system/exo-master.service <<EOF
 [Unit]
 Description=Mestre do exo na Raspberry Pi 4: LED de pronto e caminhada por botao
@@ -43,4 +54,4 @@ systemctl daemon-reload
 systemctl enable exo-master.service
 systemctl restart exo-master.service
 echo "Mestre instalado para $DONO em $PASTA. A caminhada entra direto; o LED acende em pe."
-echo "Este instalador nao configura sudoers. Revise localmente a permissao de desligamento por botao."
+echo "A regra sudoers foi validada para permitir somente os comandos de desligamento usados pelo programa."
