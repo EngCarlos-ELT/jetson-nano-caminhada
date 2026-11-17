@@ -46,6 +46,8 @@ Instale as dependências seguindo LEIA.txt e coloque o usuário no grupo dialout
 
 Os pinos 31 e 33 são entradas; o pino 31 comanda a perna esquerda e o 33 a direita. Rode um controlador por vez.
 
+O requirements.txt da Jetson declara pyserial>=3.4; os demais imports usados por esses três programas são módulos locais do repositório ou da biblioteca padrão do Python. A CANable v2 é aberta diretamente em SLCAN, então não inicie slcand ao mesmo tempo. Para os dois controles por botão, use resistores de 1 kΩ entre os pinos 31/33 e GND; aplique 3,3 V para pressionar. O pino 7/GPIO 216 é o LED verde de pronto.
+
 | Arquivo | Função e uso |
 |---|---|
 | caminhada_torque_pleno.py | Caminhada automática de cinco passos alternados, sem botões. Use depois de conferir a postura inicial e os batentes: python3 caminhada_torque_pleno.py. Aceita a porta como argumento. |
@@ -59,6 +61,50 @@ Os pinos 31 e 33 são entradas; o pino 31 comanda a perna esquerda e o 33 a dire
 | ver_angulos_batente.py | Mostra os ângulos absolutos dos quatro motores com o torque desligado. Use para conferir os batentes, sem outro programa na CANable. |
 | suporte_marcha.py | Biblioteca compartilhada pelos controladores: comunicação SLCAN, leitura da curva CSV/JSON e dados dos limites medidos. Não execute diretamente. |
 | limites_operacionais_exo.py | Funções auxiliares de faixa operacional e limite de esforço. Importado pelos controladores; não execute diretamente. |
+
+### passo_por_botao_coxa_joelho.py
+
+**O que faz.** É o modo interativo que comanda coxa e joelho da perna cujo botão foi pressionado. Cada perna age independentemente: a coxa avança e o joelho correspondente flexiona; a outra coxa mantém a posição de pé e o outro joelho fica reto. Os valores iniciais do código são 40° para a coxa e 45° para a flexão do joelho. Ao fim do passo, a perna volta à referência de pé.
+
+Segurar o botão faz o movimento avançar. Soltar antes de 70% pausa a trajetória e mantém o ângulo alcançado; depois de 70%, o programa termina o passo e retorna à pose inicial. Um novo passo no mesmo lado só é aceito depois de soltar o botão. Se o joelho tiver falha, exceder o limite de esforço ou ficar sem progresso, esse joelho é liberado; as coxas continuam. Ctrl+C encerra o programa e envia os comandos para soltar o torque.
+
+**Dependências.** Python 3, pyserial (requirements.txt), CANable v2 em SLCAN e os arquivos locais caminhada_torque_pleno.py, suporte_marcha.py, limites_operacionais_exo.py e ler_gpios_31_33.py, além do CSV/JSON da curva. Os botões usam GPIOs da Jetson, sem pacote Python adicional. Configure o pinmux como descrito acima.
+
+**Como usar.** Com o exo apoiado na posição de pé a 90° especificada neste guia, a CANable livre e os botões conectados aos pinos 31 e 33:
+
+    python3 passo_por_botao_coxa_joelho.py --checar
+    python3 passo_por_botao_coxa_joelho.py
+
+O primeiro comando verifica a lógica sem abrir CAN nem GPIO. O segundo inicia o controlador; pino 31/D6 avança a perna esquerda e pino 33/D13 a direita. Um nível de 3,3 V precisa permanecer estável por 100 ms para contar como pressionado; a soltura é confirmada em 30 ms. A porta padrão é /dev/ttyACM0; passe outra como argumento, por exemplo /dev/ttyACM1.
+
+### passo_por_botao_so_coxa.py
+
+**O que faz.** É uma variante de teste que movimenta somente os motores das coxas. Cada botão avança a coxa do seu lado até 40° e a traz de volta à referência de pé; a outra coxa mantém a pose. Os dois joelhos recebem o comando para ficarem sem torque durante toda a execução. Use essa variante somente com a estrutura apoiada, pois os joelhos não sustentam a pose.
+
+O acionamento e a pausa seguem a mesma lógica de confirmação dos botões: 3,3 V estável por 100 ms ativa; soltar antes de 70% pausa no ângulo atual e soltar depois de 70% conclui o passo. Ctrl+C encerra e solta o torque das coxas.
+
+**Dependências.** Python 3, pyserial, CANable v2 em SLCAN, GPIOs 31/33 configurados na Jetson e os módulos locais caminhada_torque_pleno.py, ler_gpios_31_33.py, suporte_marcha.py e limites_operacionais_exo.py, com os arquivos CSV/JSON da curva.
+
+**Como usar.** Depois de conferir postura, batentes e pinos, rode:
+
+    python3 passo_por_botao_so_coxa.py --checar
+    python3 passo_por_botao_so_coxa.py
+
+A opção --checar verifica a lógica sem abrir CAN ou GPIO. O comando normal usa /dev/ttyACM0; informe outra porta como argumento, se necessário. Pino 31/D6 comanda a coxa esquerda e pino 33/D13 a direita.
+
+### caminhada_torque_pleno.py
+
+**O que faz.** Executa automaticamente cinco passos alternados seguindo a curva de marcha do CSV, sem depender dos botões GPIO. Usa os quatro motores, com os valores padrão de 18° para o quadril e 45° para a flexão do joelho. A origem de cada junta é a leitura do encoder feita no início; por isso o exo precisa estar fisicamente alinhado na pose de pé antes de iniciar. No fim ou numa parada, o programa envia o comando para sair do modo de posição e espera a resposta antes de fechar a CAN.
+
+O controle usa torque nominal continuamente. Só recorre ao pico por até 0,25 s quando o nominal não faz o movimento progredir; se ainda não houver progresso, reduz a amplitude. Temperatura, velocidade, batentes, falhas ou perda de feedback também podem interromper o movimento. Os valores de torque ficam definidos no arquivo; não os aumente para compensar uma montagem desalinhada.
+
+**Dependências.** Python 3, pyserial (requirements.txt), CANable v2 em SLCAN, caminhada_torque_pleno.py junto de suporte_marcha.py e limites_operacionais_exo.py, mais o CSV/JSON da curva na mesma pasta. Não usa GPIO.
+
+**Como usar.** Com os batentes calibrados, a postura inicial conferida e nenhum outro programa usando a CANable:
+
+    python3 caminhada_torque_pleno.py
+
+A porta padrão é /dev/ttyACM0. Outra porta pode ser informada como argumento, por exemplo python3 caminhada_torque_pleno.py /dev/ttyACM1, ou pela variável CANABLE_PORT. Essa rotina não tem o modo --checar das duas variantes por botão; ao executá-la, ela abre a CANable e pode comandar os motores.
 
 O arquivo exo-desliga.sudoers contém a regra de desligamento do usuário nvidia. Os serviços automáticos da Jetson não estão nesta cópia pública; execute os programas pelos comandos acima.
 
