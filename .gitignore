@@ -1,0 +1,24 @@
+# Ambientes Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Registros de operação
+ensaios/
+*.log
+
+# Credenciais locais
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Arquivos do sistema e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,0 +1,28 @@
+Caminhada do exo para NVIDIA Jetson Nano, Ubuntu 18, CANable v2.
+
+A mesma marcha do Windows: coxa 18 graus, joelho 38 graus, ciclo 16 s,
+5 passos, torque nominal 72/15 Nm e pico so por 0,25 s.
+O programa fala SLCAN direto na porta serial. Nao use slcand junto.
+
+No Jetson, dentro desta pasta:
+
+  sudo apt-get update
+  sudo apt-get install -y python3-pip
+  pip3 install -r requirements.txt
+  sudo usermod -a -G dialout $USER
+
+Saia e entre de novo no usuario para o grupo dialout valer.
+Ligue a CANable e confira o nome:
+
+  ls /dev/ttyACM*
+
+O padrao e /dev/ttyACM0. Se aparecer outro nome, passe na linha de comando.
+
+  python3 caminhada_torque_pleno.py
+  python3 caminhada_torque_pleno.py /dev/ttyACM1
+
+Os angulos, o ciclo, os passos e os torques ficam no topo de
+caminhada_torque_pleno.py. O registro de cada ensaio sai em ensaios/.
+
+Mantenha o exo apoiado. Nao rode este programa ao mesmo tempo que o
+Windows estiver com a mesma CANable aberta.

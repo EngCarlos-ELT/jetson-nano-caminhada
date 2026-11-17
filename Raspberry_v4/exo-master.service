@@ -1,0 +1,18 @@
+# Modelo. sudo bash instalar.sh grava o usuario e o caminho reais.
+[Unit]
+Description=Mestre do exo na Raspberry Pi 4: LED de pronto e caminhada por botao
+After=local-fs.target
+
+[Service]
+Type=simple
+User=pi
+SupplementaryGroups=dialout gpio
+WorkingDirectory=/opt/Raspberry_v4
+ExecStart=/usr/bin/python3 -u /opt/Raspberry_v4/exo_master.py
+Restart=always
+RestartSec=2
+KillSignal=SIGTERM
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

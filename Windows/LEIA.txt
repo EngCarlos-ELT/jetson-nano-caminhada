@@ -1,0 +1,49 @@
+Exo no Windows, pela CANable v2. O GPIO fica desligado.
+
+A marcha e a mesma: coxa 18 graus, joelho 45 graus, um passo por comando.
+A porta padrao e COM6. Outra porta pode ser digitada na janela.
+
+Instale o Python 3 e, nesta pasta:
+
+  py -3 -m pip install -r requirements.txt
+  py -3 interface_exo.py
+
+Ou de dois cliques em iniciar.bat.
+
+Ligar abre a CANable e segura a pose em pe. So depois disso os comandos valem.
+
+  Segure ESQUERDA para a perna esquerda ir a frente.
+  Segure DIREITA para a perna direita ir a frente.
+  Segure EM PE, ou os dois lados juntos, e o exo nao caminha.
+  Soltar antes de 70% pausa o passo. Depois de 70% ele termina sozinho.
+  Soltar torque desliga os motores e encerra a operacao.
+
+As setas esquerda e direita, A e D, e a barra de espaco repetem esses comandos.
+Mantenha o exo apoiado. Nao rode esta copia junto com a Jetson ou a Pi
+na mesma CANable.
+
+  py -3 interface_exo.py --checar
+  py -3 passo_por_botao.py --checar
+
+--checar nao abre a CAN e nao liga motor.
+
+Outros programas desta pasta. Rode um de cada vez, na mesma CANable.
+
+  py -3 caminhada_torque_pleno.py
+      Cinco passos sem comando. No fim solta o torque e espera a resposta.
+
+  py -3 passo_por_botao_coxa_joelho.py
+      Outra janela. Coxa 40 graus e o joelho da perna que anda.
+      Em pe segura as duas. As duas setas sobem as duas pernas.
+      Falha de joelho solta so esse joelho. As coxas seguem.
+  py -3 passo_por_botao_coxa_joelho.py --checar
+
+  py -3 medir_batentes.py
+      No terminal. Gire o motor pedido ate o batente e aperte Enter.
+      No fim pergunta se grava suporte_marcha.py desta pasta.
+  py -3 medir_batentes.py --checar
+
+  py -3 ver_angulos_batente.py
+      Mostra os angulos com o torque desligado.
+
+iniciar.bat continua abrindo a marcha de 18 graus.

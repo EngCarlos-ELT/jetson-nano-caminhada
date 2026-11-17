@@ -1,0 +1,47 @@
+Caminhada do exo para Raspberry Pi 4. A marcha e a mesma da Jetson.
+
+Coxa 18 graus, joelho 45 graus. A CANable v2 entra em /dev/ttyACM0.
+O programa fala SLCAN direto. Nao use slcand junto.
+
+Pinos fisicos do header de 40 pinos, numeracao BCM:
+
+  pino 31 = BCM 6  = botao da perna esquerda
+  pino 33 = BCM 13 = botao da perna direita
+  pino 7  = BCM 4  = LED verde de pronto
+  pino 6  = GND
+  pino 1  = 3,3 V
+
+O pull-down interno segura o botao em 0. O resistor de 1 kΩ para o GND
+pode continuar. 3,3 V firme por 100 ms vale 1. Soltar confirma em 30 ms.
+O programa nao inverte a leitura. O LED acende em nivel 1.
+
+Na Raspberry Pi OS, dentro desta pasta:
+
+  sudo apt-get update
+  sudo apt-get install -y python3-lgpio python3-serial
+  sudo usermod -a -G dialout,gpio $USER
+
+Saia e entre de novo para os grupos valerem. Confira a CANable:
+
+  ls /dev/ttyACM*
+
+Os codigos de marcha, GPIO, limites e a referencia CSV estao nesta pasta. O JSON complementar da referencia nao foi publicado; suporte_marcha.py precisa dele localmente. O
+arquivo de servico exo-master.service esta incluido. O instalador automatico
+instalar.sh e a regra sudoers nao fazem parte desta copia publica; revise as
+permissoes e instale o servico manualmente conforme a politica local.
+
+exo_master.py solicita desligamento por sudo ao segurar os dois botoes por
+5 s. Isso depende de permissao local; o repositorio nao configura acesso root
+sem senha. O LED do pino 7 acende quando os motores seguram a pose em pe.
+
+Sem servico, dentro desta pasta:
+
+  python3 exo_master.py
+  python3 gpio_raspberry.py
+  python3 passo_por_botao.py --checar
+  python3 exo_master.py --checar
+
+--checar nao abre a CAN e nao mexe no GPIO.
+Mantenha o exo apoiado. Nao rode esta copia junto com a versao da Jetson
+na mesma CANable.
+
