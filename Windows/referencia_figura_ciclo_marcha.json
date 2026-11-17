@@ -1,0 +1,25 @@
+{
+  "source_kind": "user_supplied_plot_digitization",
+  "source_image": "../referencias/figura_ciclo_marcha.png",
+  "source_image_sha256": "a9bf5f1160cd10ea196041c2dd1b9362859cfbb6135b9ab397e0b6527e32a705",
+  "source_cycle_definition": "0 to 100 percent; toe-off marker at about 60 percent",
+  "curves": {
+    "hip": "blue centerline; flexion positive, extension negative",
+    "knee": "red centerline; flexion positive",
+    "shaded_uncertainty_bands_used": false
+  },
+  "method": "Exact blue/red line pixels sampled at 1-percent intervals; local median over +/-4 horizontal pixels; linear pixel calibration from labeled graph ticks.",
+  "angle_estimates": "Approximate digitization from the image, not raw experimental data; left and right legs share the plotted template with a 50-percent phase offset.",
+  "hip_pixel_calibration_deg_per_pixel": -0.1373889360784155,
+  "knee_pixel_calibration_deg_per_pixel": -0.16870774576599976,
+  "digitized_points": 101,
+  "physical_execution_allowed": true,
+  "motor_sign_validation": {
+    "visually_confirmed": true,
+    "knee_left": "MIT ID 2: +5 deg moved the knee posteriorly (flexion)",
+    "knee_right": "MIT ID 4: -5 deg moved the knee posteriorly (flexion)",
+    "hip_left": "MIT ID 1 positive moves the thigh forward; confirmed in an earlier visual check, and +4.983 deg was achieved in the current test",
+    "hip_right": "MIT ID 3 positive moves the thigh backward; confirmed in an earlier visual check, and -4.896 deg was achieved in the current test"
+  },
+  "warning": "The screenshot does not identify the originating study, participant, walking speed, or uncertainty-band definition. The digitized curve is approximate. Physical execution uses one of the supported 8, 12, or 16 s cycle presets, an explicit scaled excursion, the selected velocity cap, and measured stop limits with the mechanical margin; the controller validates the resulting curve before opening CAN."
+}

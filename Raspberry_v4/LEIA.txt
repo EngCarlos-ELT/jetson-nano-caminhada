@@ -25,10 +25,17 @@ Saia e entre de novo para os grupos valerem. Confira a CANable:
 
   ls /dev/ttyACM*
 
-Os codigos de marcha, GPIO, limites e a referencia CSV estao nesta pasta. O JSON complementar da referencia nao foi publicado; suporte_marcha.py precisa dele localmente. O
-arquivo de servico exo-master.service esta incluido. O instalador automatico
-instalar.sh e a regra sudoers nao fazem parte desta copia publica; revise as
-permissoes e instale o servico manualmente conforme a politica local.
+Os codigos de marcha, GPIO, limites e os arquivos CSV e JSON da curva estao
+nesta pasta. A figura de origem fica em ../referencias/figura_ciclo_marcha.png;
+o JSON usa esse caminho relativo. suporte_marcha.py le o CSV e o JSON ao iniciar.
+O arquivo de servico exo-master.service e o instalador instalar.sh estao
+incluidos. Rode o instalador dentro desta pasta:
+
+  sudo bash instalar.sh
+
+Ele instala dependencias, adiciona o usuario aos grupos e habilita o servico.
+Ele nao cria regra sudoers. O desligamento por botao depende de permissao local
+configurada e revisada pelo administrador.
 
 exo_master.py solicita desligamento por sudo ao segurar os dois botoes por
 5 s. Isso depende de permissao local; o repositorio nao configura acesso root
