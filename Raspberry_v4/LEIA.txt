@@ -3,6 +3,11 @@ Caminhada do exo para Raspberry Pi 4. A marcha e a mesma da Jetson.
 Coxa 18 graus, joelho 45 graus. A CANable v2 entra em /dev/ttyACM0.
 O programa fala SLCAN direto. Nao use slcand junto.
 
+POSICAO INICIAL OBRIGATORIA: antes de iniciar qualquer controlador, coloque o
+exo de pe, com as duas pernas retas, alinhadas entre si e a 90 graus em relacao
+a caixa de suporte da bateria. Os programas adotam a leitura inicial dos
+encoders como referencia; nao alinham a estrutura automaticamente.
+
 Pinos fisicos do header de 40 pinos, numeracao BCM:
 
   pino 31 = BCM 6  = botao da perna esquerda
@@ -24,6 +29,20 @@ Na Raspberry Pi OS, dentro desta pasta:
 Saia e entre de novo para os grupos valerem. Confira a CANable:
 
   ls /dev/ttyACM*
+
+Antes de instalar o servico, calibre os dois batentes de cada motor. Apoie o
+exo, nao o vista durante a medicao e garanta que nenhum servico ou programa
+esteja usando a CANable:
+
+  python3 medir_batentes.py --checar
+  python3 medir_batentes.py
+  python3 ver_angulos_batente.py
+
+Siga as oito solicitacoes e mova cada articulacao devagar ate o batente
+mecanico, sem forcar alem dele. Responda s para atualizar suporte_marcha.py
+somente quando todos os extremos estiverem corretos. O instalador inicia o
+servico imediatamente; por isso calibre antes de rodar instalar.sh. Veja
+../GUIA_DE_USO.md para a funcao de cada script e o procedimento completo.
 
 Os codigos de marcha, GPIO, limites e os arquivos CSV e JSON da curva estao
 nesta pasta. A figura de origem fica em ../referencias/figura_ciclo_marcha.png;

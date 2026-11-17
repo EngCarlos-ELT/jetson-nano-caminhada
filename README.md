@@ -11,6 +11,8 @@ Códigos de controle de marcha para exoesqueleto com CANable v2 (SLCAN).
 
 Cada pasta contém o código, as dependências, o CSV da curva e seu JSON complementar. Execute os comandos dentro da pasta correspondente e siga as instruções locais.
 
+Antes de ligar qualquer controlador, coloque o exo de pé, com as pernas retas e alinhadas a 90° em relação à caixa de suporte da bateria. Calibre também os batentes mecânicos dos quatro motores. O [Guia de uso](GUIA_DE_USO.md) descreve a sequência e a função de cada arquivo.
+
 ## Reproduzir a curva de referência
 
 O arquivo [referencias/figura_ciclo_marcha.png](referencias/figura_ciclo_marcha.png) é a figura usada como origem. Cada CSV tem 101 amostras, espaçadas em 1% do ciclo. O JSON ao lado de cada CSV registra o método de digitalização, a calibração em pixels, a verificação dos sinais dos motores e o hash da imagem. O caminho da imagem no JSON é relativo ao repositório.

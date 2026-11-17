@@ -3,12 +3,30 @@ Exo no Windows, pela CANable v2. O GPIO fica desligado.
 A marcha e a mesma: coxa 18 graus, joelho 45 graus, um passo por comando.
 A porta padrao e COM6. Outra porta pode ser digitada na janela.
 
+POSICAO INICIAL OBRIGATORIA: antes de clicar em Ligar, coloque o exo de pe,
+com as duas pernas retas, alinhadas entre si e a 90 graus em relacao a caixa
+de suporte da bateria. O programa adota a leitura inicial dos encoders como
+referencia e nao alinha a estrutura automaticamente.
+
 Instale o Python 3 e, nesta pasta:
 
   py -3 -m pip install -r requirements.txt
   py -3 interface_exo.py
 
 Ou de dois cliques em iniciar.bat.
+
+Antes do primeiro uso e depois de qualquer ajuste mecanico, calibre os dois
+batentes de cada motor. Apoie o exo, nao o vista durante a medicao e rode um
+programa por vez na CANable:
+
+  py -3 medir_batentes.py --checar
+  py -3 medir_batentes.py
+  py -3 ver_angulos_batente.py
+
+Siga as oito solicitacoes, movendo cada articulacao devagar ate o batente
+mecanico, sem forcar alem dele. Responda s para alterar suporte_marcha.py
+somente se todos os extremos estiverem corretos. Veja ../GUIA_DE_USO.md para
+o mapa de cada script e o procedimento completo.
 
 Ligar abre a CANable e segura a pose em pe. So depois disso os comandos valem.
 
